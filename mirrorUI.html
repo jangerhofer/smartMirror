@@ -1,0 +1,20 @@
+<head>
+  <title>mirrorUI</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+
+<!-- https://erikflowers.github.io/weather-icons/ -->
+
+<body>
+  {{> time}}
+  {{> weather }}
+  {{> stocks }}
+  {{> topStories }}
+</body>
+
+<template name="topStories">
+  <h1>TOP STORIES:</h1>
+  {{#each topStories}}
+    <div>{{ title }} -- {{ displayDate updated_date }} </div>
+  {{/each}}
+</template>

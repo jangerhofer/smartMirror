@@ -1,0 +1,15 @@
+<template name="stocks">
+<h1> Stocks </h1>
+
+<table border="1" style="width:100%">
+  {{# each getStocks }}
+  <tr>
+    <td>{{ symbol }} </td>
+    <td>{{ bid }} </td>
+    <td>{{ changeInPercent }} </td>
+</tr>
+  {{ /each }}
+</table>
+
+
+</template>

@@ -1,0 +1,6 @@
+<template name="weather">
+  <div id="weather">
+    <h1> Weather </h1> {{# each findLocations }}
+    <span>{{ locationName }}: {{ curTemp locationName }} <i class="wi wi-{{ icon locationName }}"></i></span> {{ /each }}
+  </div>
+</template>
