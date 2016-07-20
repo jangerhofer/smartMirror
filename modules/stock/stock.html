@@ -1,15 +1,18 @@
 <template name="stocks">
-<h1> Stocks </h1>
+  <div id="stocks">
+    {{#if Template.subscriptionsReady}}
 
-<table border="1" style="width:100%">
-  {{# each getStocks }}
-  <tr>
-    <td>{{ symbol }} </td>
-    <td>{{ bid }} </td>
-    <td>{{ changeInPercent }} </td>
-</tr>
-  {{ /each }}
-</table>
+    <table style="width:100%">
+      {{# each getStocks }}
+      <tr class="{{# if isPositive changeInPercent}} pos {{ else }} neg {{/if}}">
+        <td class="symbol">{{ symbol }}</td>
+        <td>{{ bid }}</td>
+        <td>{{ changeInPercent }}%</td>
+      </tr>
+      {{ /each }}
+    </table>
+    {{ else}} NOPE {{ /if}}
 
-
+  </div>
 </template>
+<!-- http://docs.meteor.com/#/full/observe -->

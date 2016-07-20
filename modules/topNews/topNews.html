@@ -1,0 +1,10 @@
+<template name="topStories">
+  <div id="topStories">
+  {{#each topStories}}
+    <div>
+      <span class="title">{{ title }}.</span> <span class="section">{{ section }},</span>
+    <span class="date">{{ displayDate updated_date }}</span>
+  </div>
+  {{/each}}
+</div>
+</template>

@@ -14,22 +14,29 @@ var icons = {
   'tornado': 'tornado'
 };
 
-Locations = new Mongo.Collection("locations")
 Weather = new Mongo.Collection("weather")
 
 if (Meteor.isClient) {
 
   Template.weather.helpers({
-      findLocations : function() {
-        return Locations.find().fetch();
-      },
-      curTemp: function(cityName) {
-        return Weather.findOne({locationName : cityName}).currently.temperature;
-      },
-      icon: function(cityName) {
-        return icons[Weather.findOne({locationName : cityName}).currently.icon];
-      }
-    });
+    findLocations: function() {
+      return Weather.find({}, {
+        sort: {
+          locationName: 1
+        }
+      }).fetch();
+    },
+    curTemp: function(cityName) {
+      return Weather.findOne({
+        locationName: cityName
+      }).currently.temperature;
+    },
+    icon: function(cityName) {
+      return icons[Weather.findOne({
+        locationName: cityName
+      }).currently.icon];
+    }
+  });
 
 }
 
@@ -37,22 +44,22 @@ if (Meteor.isServer) {
 
   Meteor.methods({
 
-    updateWeather: function() {
+    pullWeather: function() {
       var ForecastIo = require('forecastio');
-      var forecastIo = new ForecastIo('d31eb07bdbc10ef4753c477675d626b7');
+      var forecastIo = new ForecastIo('d31eb07bdbc10ef4753c477675d626b7')
 
-      weatherLocs = Locations.find({}).fetch()
-      console.log("WLocs: " + weatherLocs[0].locationName);
+      locations = Weather.find().fetch();
 
-      for (var i = 0; i < weatherLocs.length; i++) {
-        curLoc = weatherLocs[i].locationName
-        forecastIo.forecast(weatherLocs[i].lat, weatherLocs[i].long).then(Meteor.bindEnvironment(function(data) {
-          Weather.remove({
-            'locationName': curLoc
-          })
-          data.locationName = curLoc
-          Weather.insert(data)
-        }))
+      for (var i = 0; i < locations.length; i++) {
+        var locationName = locations[i].locationName
+
+        var getWeather = Meteor.wrapAsync(forecastIo.forecast, forecastIo)
+        var data = getWeather(locations[i].latitude, locations[i].longitude, {})
+        Weather.update({
+          locationName: locationName
+        }, {
+          $set: data
+        })
       }
 
     }
@@ -65,7 +72,7 @@ if (Meteor.isServer) {
       return parser.text('every 6 minutes');
     },
     job: function() {
-      Meteor.call("updateWeather")
+      Meteor.call("pullWeather")
     }
   });
 
